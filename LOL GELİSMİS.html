@@ -2,209 +2,395 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>LoL Ultimate - Tüm Özellikler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LoL Mobile - Responsive Arena</title>
     <style>
-        * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
-        body { background: #0a0f1e; font-family: 'Segoe UI', system-ui; display: flex; flex-direction: column; align-items: center; padding: 10px; color: #f0f0f0; }
-        #main-menu { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 15, 30, 0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; padding: 20px; overflow-y: auto; }
-        .menu-title { color: #c89b3c; font-size: 2rem; text-shadow: 0 0 10px #c89b3c; margin-bottom: 20px; }
-        .menu-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
-        .tab-btn { background: #1e2a3a; color: #f0f0f0; border: 1px solid #c89b3c; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { background: #c89b3c; color: #0a0f1e; box-shadow: 0 0 10px #c89b3c; }
-        .menu-panel { width: 90%; max-width: 800px; background: #111827; border: 1px solid #374151; border-radius: 16px; padding: 15px; max-height: 500px; overflow-y: auto; display: none; }
-        .menu-panel.active { display: block; }
-        .btn { background: #2a3a4a; border: 1px solid #c89b3c; border-radius: 30px; padding: 6px 12px; font-weight: bold; cursor: pointer; color: #ffd966; margin: 5px; display: inline-block; }
-        .btn:active { transform: scale(0.96); }
-        .game-container { position: relative; display: inline-block; background: #000; }
-        canvas { border: 3px solid #c89b3c; border-radius: 16px; cursor: crosshair; display: block; }
-        .chat-box { position: absolute; bottom: 10px; left: 10px; width: 240px; background: rgba(0,0,0,0.7); border-radius: 12px; backdrop-filter: blur(5px); z-index: 20; font-size: 11px; }
-        .chat-messages { height: 100px; overflow-y: auto; padding: 5px; color: #eee; }
-        .chat-input { display: flex; padding: 5px; }
-        .chat-input input { flex:1; background: #2a3a4a; border: none; color: white; padding: 4px; border-radius: 8px; }
-        .chat-input button { background: #c89b3c; border: none; margin-left: 5px; padding: 0 8px; border-radius: 8px; cursor: pointer; }
-        .ui-panel { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 20px; font-size: 10px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 20; }
-        .ui-panel span { background: #1f2937; padding: 2px 8px; border-radius: 20px; }
-        .action-bar { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 5px; z-index: 20; }
-        .settings-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 10px; }
-        .form-group { margin-bottom: 10px; }
-        label { font-size: 0.75rem; color: #c89b3c; }
-        select, input { background: #1f2937; border: 1px solid #4b5563; color: white; border-radius: 8px; padding: 4px; width: 100%; }
-        .profile-card { display: flex; gap: 10px; background: #1f2937; padding: 10px; border-radius: 16px; margin-bottom: 10px; align-items: center; }
-        .profile-avatar { width: 50px; height: 50px; background: #c89b3c; border-radius: 50%; }
-        .shake { animation: shake 0.2s ease-in-out 0s 2; }
-        @keyframes shake { 0%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: #0a0f1e;
+            font-family: 'Segoe UI', system-ui, -apple-system;
+            margin: 0;
+            padding: 0;
+            color: #f0f0f0;
+            overflow-x: hidden;
+            touch-action: pan-x pan-y;
+        }
+        /* Ana menü - mobil uyumlu */
+        #main-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 30, 0.98);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .menu-title {
+            color: #c89b3c;
+            font-size: 1.8rem;
+            text-align: center;
+            text-shadow: 0 0 5px #c89b3c;
+            margin-bottom: 16px;
+        }
+        .menu-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .tab-btn, .btn-action, .btn {
+            background: #1e2a3a;
+            border: 1px solid #c89b3c;
+            color: #ffd966;
+            padding: 10px 16px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.1s;
+            text-align: center;
+        }
+        .tab-btn.active, .tab-btn:active, .btn:active {
+            background: #c89b3c;
+            color: #0a0f1e;
+            transform: scale(0.97);
+        }
+        .menu-panel {
+            width: 100%;
+            max-width: 500px;
+            background: #111827dd;
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 16px;
+            margin-top: 10px;
+            display: none;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+        .menu-panel.active {
+            display: block;
+        }
+        /* Oyun konteynırı - tam ekran responsive */
+        .game-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            touch-action: none;
+        }
+        canvas {
+            width: 100%;
+            height: auto;
+            background: #1a2a3a;
+            display: block;
+            touch-action: none;
+        }
+        /* Mobil kontroller */
+        .mobile-controls {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            gap: 10px;
+            z-index: 200;
+            background: transparent;
+            pointer-events: none;
+        }
+        .joypad {
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            grid-template-rows: repeat(3, 60px);
+            gap: 5px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 80px;
+            padding: 8px;
+            backdrop-filter: blur(4px);
+            pointer-events: auto;
+        }
+        .joypad-btn {
+            background: #2a3a4a;
+            border: 1px solid #c89b3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd966;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+        }
+        .joypad-btn:active {
+            background: #c89b3c;
+            transform: scale(0.92);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            pointer-events: auto;
+        }
+        .action-btn {
+            background: #c89b3c;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #0a0f1e;
+            box-shadow: 0 2px 8px black;
+            touch-action: manipulation;
+        }
+        .chat-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 10px;
+            background: #c89b3c;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 210;
+            cursor: pointer;
+        }
+        .chat-panel {
+            position: fixed;
+            bottom: 140px;
+            right: 10px;
+            width: 260px;
+            background: rgba(0,0,0,0.85);
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+            display: none;
+            flex-direction: column;
+            z-index: 210;
+            max-height: 200px;
+        }
+        .chat-messages {
+            height: 120px;
+            overflow-y: auto;
+            padding: 8px;
+            font-size: 11px;
+        }
+        .chat-input {
+            display: flex;
+            padding: 6px;
+        }
+        .chat-input input {
+            flex: 1;
+            background: #1f2937;
+            border: none;
+            padding: 8px;
+            border-radius: 20px;
+            color: white;
+        }
+        .ui-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 40px;
+            padding: 6px 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            font-size: 10px;
+            backdrop-filter: blur(4px);
+            z-index: 200;
+        }
+        .ui-panel span {
+            background: #1f2937;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+        .skill-bar {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            background: rgba(0,0,0,0.6);
+            padding: 8px 16px;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+            z-index: 200;
+        }
+        .skill {
+            background: #2a3a4a;
+            border: 1px solid #c89b3c;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .joypad-btn { width: 50px; height: 50px; font-size: 1.2rem; }
+            .joypad { grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); }
+            .action-btn { padding: 8px 14px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
 
 <div id="main-menu">
-    <h1 class="menu-title">⚔️ LOL ULTIMATE - TÜM ÖZELLİKLER ⚔️</h1>
+    <h1 class="menu-title">⚔️ LOL MOBILE ⚔️</h1>
     <div class="menu-tabs">
         <button class="tab-btn active" onclick="switchTab('champPanel')">Şampiyonlar</button>
         <button class="tab-btn" onclick="switchTab('profilePanel')">Profilim</button>
-        <button class="tab-btn" onclick="switchTab('settingsPanel')">Grafik & Ses</button>
-        <button class="tab-btn" onclick="switchTab('socialPanel')">Sosyal & Liderlik</button>
-        <button class="tab-btn" onclick="startGame()">⚡ Hızlı Oyna</button>
+        <button class="tab-btn" onclick="switchTab('settingsPanel')">Ayarlar</button>
+        <button class="tab-btn" onclick="startGame()">⚡ Oyna</button>
     </div>
 
     <div id="champPanel" class="menu-panel active">
-        <h3>Şampiyonlar (Ahri ücretsiz)</h3>
+        <h3>Şampiyonlar</h3>
         <div id="champGrid">
-            <div class="btn" onclick="selectChamp('ahri')">🦊 Ahri (Seçili)</div>
-            <div class="btn" onclick="buyChamp('yasuo',1500)">🌪️ Yasuo (1500 altın)</div>
-            <div class="btn" onclick="buyChamp('darius',2000)">🪓 Darius (2000 altın)</div>
+            <div class="btn" onclick="selectChamp('ahri')">🦊 Ahri (Ücretsiz)</div>
+            <div class="btn" onclick="buyChamp('yasuo',1500)">🌪️ Yasuo (1500)</div>
+            <div class="btn" onclick="buyChamp('darius',2000)">🪓 Darius (2000)</div>
         </div>
-        <button class="btn" onclick="randomSkinPreview()">🎨 Rastgele Kostüm Göster</button>
-        <button class="btn" onclick="clearCache()">🗑️ Oyun Önbelleğini Temizle</button>
+        <button class="btn" onclick="randomSkinPreview()">🎨 Rastgele Kostüm</button>
+        <button class="btn" onclick="clearCache()">🗑️ Önbellek Temizle</button>
     </div>
 
     <div id="profilePanel" class="menu-panel">
-        <div class="profile-card" id="profileCard">
-            <div class="profile-avatar"></div>
-            <div>
-                <strong id="displayName">İbo94</strong> <span id="displayTitle" class="btn" style="padding:2px 8px;">Sihirdar</span><br>
-                <span id="displayRank">Gümüş I</span> • Seviye <span id="displayLevel">42</span>
-            </div>
+        <div id="profileCard" style="background:#1f2937; border-radius: 20px; padding: 12px; margin-bottom: 10px;">
+            <strong id="displayName">İbo94</strong> <span id="displayTitle">Sihirdar</span><br>
+            <span id="displayRank">Gümüş I</span> • Seviye 42
         </div>
-        <div class="settings-grid">
-            <div><label>Ad Değiştir</label><input id="newNameInput" placeholder="Yeni ad"><button onclick="changeName()">Değiştir</button></div>
-            <div><label>Unvan</label><input id="newTitleInput" placeholder="Unvan"><button onclick="changeTitle()">Kaydet</button></div>
-            <div><label>Kart Rengi</label><input type="color" id="cardColor" value="#1f2937"><button onclick="setCardColor()">Uygula</button></div>
-        </div>
-        <div><strong>🏆 Son Maç:</strong> <span id="lastMatch">Galibiyet</span></div>
-        <div><strong>🏅 Başarılar:</strong> <span id="achievements">100 Minyon, 10 Kill</span></div>
-        <button class="btn" onclick="showLeaderboard()">🏆 Liderlik Tablosu</button>
-        <div id="leaderboardDiv" style="display:none; margin-top:5px;">1. İbo94 - 2500<br>2. KralMelo - 2100</div>
+        <div><label>Ad Değiştir: <input id="newNameInput" placeholder="Yeni ad"></label><button onclick="changeName()">Değiştir</button></div>
+        <div><label>Unvan: <input id="newTitleInput" placeholder="Unvan"></label><button onclick="changeTitle()">Kaydet</button></div>
+        <button class="btn" onclick="showLeaderboard()">🏆 Liderlik</button>
+        <div id="leaderboardDiv" style="display:none;">1. İbo94 - 2500</div>
         <button class="btn" onclick="showFriendScores()">👥 Arkadaş Puanları</button>
         <div id="friendScoresDiv"></div>
     </div>
 
     <div id="settingsPanel" class="menu-panel">
         <div class="settings-grid">
-            <div class="form-group"><label>Grafik Modu</label><select id="graphicMode"><option>Klasik</option><option>Canlı</option><option>Soluk</option><option>Performans</option></select></div>
-            <div class="form-group"><label>FPS Limiti</label><select id="fpsLimit"><option>30</option><option>40</option><option selected>60</option><option>90</option><option>120</option></select></div>
-            <div class="form-group"><label>Görüntü Kalitesi</label><select id="quality"><option>Düşük</option><option selected>Orta</option><option>Yüksek</option><option>Aşırı Yüksek</option></select></div>
-            <div class="form-group"><label>Çözünürlük</label><select id="resolution"><option>Düşük (640x360)</option><option selected>Orta (900x550)</option><option>Yüksek (1280x720)</option></select></div>
-            <div class="form-group"><label>Efekt Kalitesi</label><select id="effectQuality"><option>Düşük</option><option selected>Orta</option><option>Yüksek</option></select></div>
-            <div class="form-group"><label>Hareketli Metin</label><select id="movingText"><option>Açık</option><option>Kapalı</option></select></div>
-            <div class="form-group"><label>Arayüz Animasyonları</label><select id="uiAnim"><option>Açık</option><option>Kapalı</option></select></div>
-            <div class="form-group"><label>Kenar Yumuşatma</label><select id="antialias"><option>Açık</option><option>Kapalı</option></select></div>
-            <div class="form-group"><label>Titreşimli Bildirim</label><select id="vibrate"><option>Açık</option><option>Kapalı</option></select></div>
-            <div class="form-group"><label>Ses Efektleri</label><select id="sfx"><option>Açık</option><option>Kapalı</option></select></div>
-            <div class="form-group"><label>Şampiyon Sesleri</label><select id="champVoice"><option>Açık</option><option>Kapalı</option></select></div>
-            <div class="form-group"><label>Sesli Sohbet</label><select id="voiceChat"><option>Kapalı</option><option>Açık</option></select></div>
+            <div><label>Grafik Modu</label><select id="graphicMode"><option>Klasik</option><option>Canlı</option><option>Soluk</option><option>Performans</option></select></div>
+            <div><label>Ses Efektleri</label><select id="sfx"><option>Açık</option><option>Kapalı</option></select></div>
+            <div><label>Titreşim</label><select id="vibrate"><option>Açık</option><option>Kapalı</option></select></div>
         </div>
-        <button class="btn" onclick="applySettings()">Ayarları Uygula</button>
-        <button class="btn" onclick="testVibration()">Titreşim Testi</button>
-        <button class="btn" onclick="playBeep()">Ses Testi</button>
+        <button class="btn" onclick="applySettings()">Uygula</button>
+        <button class="btn" onclick="testVibration()">Titreşim Test</button>
+        <button class="btn" onclick="playBeep()">Ses Test</button>
     </div>
-
-    <div id="socialPanel" class="menu-panel">
-        <button class="btn" onclick="sendGuildInvite()">📢 Açık Lonca Daveti Gönder</button>
-        <div id="guildResult"></div>
-        <button class="btn" onclick="showFriendScores()">🏅 Arkadaş Puanlarını Göster</button>
-        <div id="friendScoresSocial"></div>
-    </div>
-
-    <button class="btn" style="margin-top:20px;" onclick="startGame()">🎮 OYUNA BAŞLA</button>
 </div>
 
-<div class="game-container" style="display:none;" id="gameContainer">
-    <canvas id="gameCanvas" width="900" height="550"></canvas>
-    <div class="chat-box" id="chatBox">
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input"><input id="chatInput" placeholder="Sohbet..." maxlength="50"><button onclick="sendChatMsg()">➤</button></div>
-    </div>
+<div class="game-container" id="gameContainer">
+    <canvas id="gameCanvas"></canvas>
     <div class="ui-panel" id="gameUI">
         <span>❤️ <span id="health">100</span></span>
         <span>💙 <span id="mana">100</span></span>
-        <span>⭐ Lv <span id="level">1</span></span>
         <span>💰 <span id="gold">500</span></span>
-        <span>🏆 Skor <span id="score">0</span></span>
-        <span>⚔️ K/D/A <span id="kda">0/0/0</span></span>
-        <span>🔫 <span id="weapon">Tabanca</span></span>
+        <span>🏆 <span id="score">0</span></span>
     </div>
-    <div class="action-bar">
-        <div class="btn" id="btnQ">Q</div>
-        <div class="btn" id="btnW">W</div>
-        <div class="btn" id="btnE">E</div>
-        <div class="btn" id="btnR">R</div>
-        <div class="btn" id="btnF">F (Işınlan)</div>
+    <div class="skill-bar">
+        <div class="skill" id="btnQ">Q</div>
+        <div class="skill" id="btnW">W</div>
+        <div class="skill" id="btnE">E</div>
+        <div class="skill" id="btnR">R</div>
+        <div class="skill" id="btnF">F</div>
     </div>
-    <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 12px; font-size: 10px;">
-        <div>İbo94 - Ahri</div>
-        <div id="miniLevel">Seviye 1</div>
+    <div class="mobile-controls">
+        <div class="joypad" id="joypad">
+            <div></div><div class="joypad-btn" data-dir="up">▲</div><div></div>
+            <div class="joypad-btn" data-dir="left">◀</div><div class="joypad-btn" data-dir="down">▼</div><div class="joypad-btn" data-dir="right">▶</div>
+            <div></div><div></div><div></div>
+        </div>
+        <div class="action-buttons">
+            <div class="action-btn" id="shootBtn">🔫 ATEŞ ET</div>
+            <div class="action-btn" id="menuBtn">🏠 MENÜ</div>
+        </div>
+    </div>
+    <div class="chat-toggle" id="chatToggle">💬</div>
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input id="chatInput" placeholder="Sohbet..." maxlength="40">
+            <button onclick="sendChatMsg()">Gönder</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // ---------- OYUN MOTORU (Basit ama çalışır) ----------
-    let gameRunning = false;
+    // ---------- RESPONSIVE OYUN MOTORU ----------
     let canvas = document.getElementById('gameCanvas');
     let ctx = canvas.getContext('2d');
-    let keys = {};
-    let mouseX = 400, mouseY = 300;
+    let gameRunning = false;
+    let animationId = null;
     let player = {
-        x: canvas.width/2, y: canvas.height/2, radius: 18,
+        x: 100, y: 100, radius: 18,
         health: 100, maxHealth: 100,
         mana: 100, maxMana: 100,
-        ad: 12, level: 1, xp: 0, xpNeeded: 60,
-        gold: 500, kills: 0, deaths: 0, assists: 0, cs: 0,
-        speed: 4.2, direction: 1
+        ad: 12, level: 1,
+        gold: 500, kills: 0, cs: 0,
+        speed: 4, direction: 1
     };
-    let projectiles = [];
     let enemies = [];
-    let waveTimer = 0;
-    let currentWeapon = 'pistol';
-    let weaponCooldown = 0;
+    let projectiles = [];
     let cds = { q:0, w:0, e:0, r:0 };
-    let animationId = null;
-    let lastTimestamp = 0;
-    let fpsInterval = 1000/60;
-    let requestedFPS = 60;
+    let weaponCooldown = 0;
+    let currentWeapon = 'pistol';
+    let selectedChamp = 'ahri';
+    let mouseX = 200, mouseY = 200; // ateş yönü için
+    let keys = {};
 
     const weapons = {
         pistol: { name:'Tabanca', damage:15, bulletSpeed:12, radius:5, cooldown:12, manaCost:5, bullets:1, spread:0 },
-        rifle: { name:'Tüfek', damage:25, bulletSpeed:14, radius:4, cooldown:8, manaCost:8, bullets:3, spread:0.12 },
-        shotgun: { name:'Pompalı', damage:30, bulletSpeed:10, radius:5, cooldown:20, manaCost:12, bullets:5, spread:0.2 }
+        rifle: { name:'Tüfek', damage:25, bulletSpeed:14, radius:4, cooldown:8, manaCost:8, bullets:3, spread:0.12 }
     };
-    let selectedChamp = 'ahri';
-    let charStats = {
-        ahri: { maxHealth:100, maxMana:120, ad:12 },
-        yasuo: { maxHealth:90, maxMana:100, ad:18 },
-        darius: { maxHealth:130, maxMana:90, ad:22 }
-    };
+
+    function resizeCanvas() {
+        let w = window.innerWidth;
+        let h = window.innerHeight - 120; // kontrol alanı için boşluk
+        canvas.width = Math.min(w, 600);
+        canvas.height = Math.min(h, 500);
+        canvas.style.width = '100%';
+        canvas.style.height = 'auto';
+    }
+    window.addEventListener('resize', resizeCanvas);
 
     function updateUI() {
         document.getElementById('health').innerText = Math.floor(player.health);
         document.getElementById('mana').innerText = Math.floor(player.mana);
-        document.getElementById('level').innerText = player.level;
         document.getElementById('gold').innerText = player.gold;
         document.getElementById('score').innerText = player.kills*100 + player.cs*10;
-        document.getElementById('kda').innerText = `${player.kills}/${player.deaths}/${player.assists}`;
-        document.getElementById('weapon').innerText = weapons[currentWeapon].name;
-        document.getElementById('miniLevel').innerText = `Seviye ${player.level}`;
     }
 
     function applyChampStats() {
-        let stats = charStats[selectedChamp];
-        player.maxHealth = stats.maxHealth + (player.level-1)*12;
+        let stats = { ahri:{ maxHealth:100, maxMana:120, ad:12 }, yasuo:{ maxHealth:90, maxMana:100, ad:18 }, darius:{ maxHealth:130, maxMana:90, ad:22 } }[selectedChamp];
+        player.maxHealth = stats.maxHealth;
+        player.maxMana = stats.maxMana;
+        player.ad = stats.ad;
         player.health = Math.min(player.health, player.maxHealth);
-        player.maxMana = stats.maxMana + (player.level-1)*8;
         player.mana = Math.min(player.mana, player.maxMana);
-        player.ad = stats.ad + (player.level-1)*2;
-        updateUI();
-    }
-
-    function gainXP(amount) {
-        player.xp += amount;
-        while (player.xp >= player.xpNeeded) {
-            player.level++;
-            player.xp -= player.xpNeeded;
-            player.xpNeeded = Math.floor(player.xpNeeded * 1.25);
-            applyChampStats();
-        }
         updateUI();
     }
 
@@ -212,12 +398,7 @@
         let side = Math.random()<0.5?0:1;
         let x = side===0? 20 : canvas.width-20;
         let y = 30 + Math.random()*(canvas.height-60);
-        enemies.push({
-            x, y, radius: 12,
-            health: 40 + Math.floor(player.level*3),
-            maxHealth: 40 + Math.floor(player.level*3),
-            speed: 1.2, damage: 8, goldReward: 20
-        });
+        enemies.push({ x, y, radius: 12, health: 40, maxHealth: 40, speed: 1.2, damage: 8, goldReward: 20 });
     }
 
     function shoot() {
@@ -227,139 +408,54 @@
         player.mana -= w.manaCost;
         weaponCooldown = w.cooldown;
         let angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-        let color = '#0ac8ec';
-        if (selectedChamp === 'ahri') color = '#c084fc';
-        else if (selectedChamp === 'yasuo') color = '#22d3ee';
-        else color = '#ef4444';
         if (w.bullets === 1) {
-            projectiles.push({
-                x: player.x, y: player.y,
-                dx: Math.cos(angle)*w.bulletSpeed, dy: Math.sin(angle)*w.bulletSpeed,
-                damage: w.damage + player.ad, radius: w.radius, life: 100, color: color
-            });
+            projectiles.push({ x:player.x, y:player.y, dx:Math.cos(angle)*w.bulletSpeed, dy:Math.sin(angle)*w.bulletSpeed, damage:w.damage+player.ad, radius:w.radius, life:100 });
         } else {
-            for (let i=0; i<w.bullets; i++) {
-                let off = (i - (w.bullets-1)/2) * w.spread;
-                projectiles.push({
-                    x: player.x, y: player.y,
-                    dx: Math.cos(angle+off)*w.bulletSpeed, dy: Math.sin(angle+off)*w.bulletSpeed,
-                    damage: w.damage + player.ad, radius: w.radius-1, life: 100, color: color
-                });
+            for(let i=0;i<w.bullets;i++){
+                let off = (i - (w.bullets-1)/2)*w.spread;
+                projectiles.push({ x:player.x, y:player.y, dx:Math.cos(angle+off)*w.bulletSpeed, dy:Math.sin(angle+off)*w.bulletSpeed, damage:w.damage+player.ad, radius:w.radius-1, life:100 });
             }
         }
         updateUI();
-        if (document.getElementById('sfx').value === 'Açık') playBeep();
+        if (document.getElementById('sfx')?.value === 'Açık') playBeep();
     }
 
-    function castQ() {
-        if (cds.q>0 || player.mana<20) return;
-        player.mana -= 20;
-        cds.q = 30;
-        let angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-        projectiles.push({
-            x: player.x, y: player.y, dx: Math.cos(angle)*14, dy: Math.sin(angle)*14,
-            damage: player.ad+35, radius: 9, life: 100, color: '#ffaa00'
-        });
-        updateUI();
-    }
-    function castW() {
-        if (cds.w>0 || player.mana<30) return;
-        player.mana -= 30;
-        cds.w = 40;
-        player.health = Math.min(player.maxHealth, player.health+40);
-        updateUI();
-    }
-    function castE() {
-        if (cds.e>0 || player.mana<25) return;
-        player.mana -= 25;
-        cds.e = 25;
-        let oldSpeed = player.speed;
-        player.speed = 7;
-        setTimeout(()=> player.speed = oldSpeed, 800);
-        for (let i=0; i<enemies.length; i++) {
-            if (Math.hypot(player.x-enemies[i].x, player.y-enemies[i].y) < 80) {
-                enemies[i].health -= player.ad+20;
-                if (enemies[i].health <= 0) {
-                    player.gold += enemies[i].goldReward;
-                    gainXP(15);
-                    player.kills++;
-                    player.cs++;
-                    enemies.splice(i,1);
-                    i--;
-                }
-            }
-        }
-        updateUI();
-    }
-    function castR() {
-        if (cds.r>0 || player.mana<60) return;
-        player.mana -= 60;
-        cds.r = 120;
-        if (document.getElementById('shakeSetting')?.value === 'Açık') {
-            document.querySelector('.game-container').classList.add('shake');
-            setTimeout(()=> document.querySelector('.game-container').classList.remove('shake'), 200);
-        }
-        for (let i=0; i<enemies.length; i++) {
-            if (Math.hypot(player.x-enemies[i].x, player.y-enemies[i].y) < 160) {
-                enemies[i].health -= player.ad*2+60;
-                if (enemies[i].health <= 0) {
-                    player.gold += enemies[i].goldReward;
-                    gainXP(25);
-                    player.kills++;
-                    player.cs++;
-                    enemies.splice(i,1);
-                    i--;
-                }
-            }
-        }
-        if (document.getElementById('champVoice').value === 'Açık') {
-            let utterance = new SpeechSynthesisUtterance(`Ulti hazır! ${selectedChamp} fırtınası`);
-            speechSynthesis.speak(utterance);
-        }
-        updateUI();
-    }
-    function castFlash() {
-        let angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-        player.x += Math.cos(angle)*150;
-        player.y += Math.sin(angle)*150;
-        player.x = Math.min(canvas.width-25, Math.max(25, player.x));
-        player.y = Math.min(canvas.height-25, Math.max(25, player.y));
-    }
+    function castQ() { if(cds.q<=0 && player.mana>=20) { player.mana-=20; cds.q=30; let a=Math.atan2(mouseY-player.y, mouseX-player.x); projectiles.push({x:player.x,y:player.y,dx:Math.cos(a)*14,dy:Math.sin(a)*14,damage:player.ad+35,radius:9,life:100}); updateUI(); } }
+    function castW() { if(cds.w<=0 && player.mana>=30) { player.mana-=30; cds.w=40; player.health=Math.min(player.maxHealth, player.health+40); updateUI(); } }
+    function castE() { if(cds.e<=0 && player.mana>=25) { player.mana-=25; cds.e=25; player.speed=7; setTimeout(()=>player.speed=4.2,800); updateUI(); } }
+    function castR() { if(cds.r<=0 && player.mana>=60) { player.mana-=60; cds.r=120; for(let e of enemies) { if(Math.hypot(player.x-e.x,player.y-e.y)<160) e.health-=player.ad*2+60; } updateUI(); } }
+    function castFlash() { let angle=Math.atan2(mouseY-player.y, mouseX-player.x); player.x+=Math.cos(angle)*120; player.y+=Math.sin(angle)*120; player.x=Math.min(canvas.width-25,Math.max(25,player.x)); player.y=Math.min(canvas.height-25,Math.max(25,player.y)); }
 
     function updateGame() {
         if (!gameRunning) return;
+        // klavye hareket (opsiyonel)
         let moveX=0, moveY=0;
-        if (keys['w']||keys['arrowup']) moveY=-1;
-        if (keys['s']||keys['arrowdown']) moveY=1;
-        if (keys['a']||keys['arrowleft']) moveX=-1;
-        if (keys['d']||keys['arrowright']) moveX=1;
+        if (keys['ArrowUp']||keys['w']) moveY=-1;
+        if (keys['ArrowDown']||keys['s']) moveY=1;
+        if (keys['ArrowLeft']||keys['a']) moveX=-1;
+        if (keys['ArrowRight']||keys['d']) moveX=1;
         if (moveX!==0||moveY!==0) {
-            let len = Math.hypot(moveX,moveY);
+            let len=Math.hypot(moveX,moveY);
             moveX/=len; moveY/=len;
-            player.x += moveX * player.speed;
-            player.y += moveY * player.speed;
-            player.x = Math.min(canvas.width-25, Math.max(25, player.x));
-            player.y = Math.min(canvas.height-25, Math.max(25, player.y));
-            if (moveX!==0) player.direction = moveX;
+            player.x+=moveX*player.speed;
+            player.y+=moveY*player.speed;
+            player.x=Math.min(canvas.width-25,Math.max(25,player.x));
+            player.y=Math.min(canvas.height-25,Math.max(25,player.y));
+            if(moveX!==0) player.direction=moveX;
         }
-        waveTimer++;
-        if (waveTimer > 90) { spawnEnemy(); waveTimer = 0; }
-        if (player.mana < player.maxMana) player.mana = Math.min(player.maxMana, player.mana+0.4);
-        for (let i=0;i<projectiles.length;i++) {
-            let p = projectiles[i];
-            p.x += p.dx; p.y += p.dy;
-            p.life--;
-            if (p.x<-50||p.x>canvas.width+50||p.y<-50||p.y>canvas.height+50||p.life<=0) {
-                projectiles.splice(i,1); i--; continue;
-            }
-            for (let j=0;j<enemies.length;j++) {
-                let e = enemies[j];
-                if (Math.hypot(p.x-e.x, p.y-e.y) < p.radius + e.radius) {
-                    e.health -= p.damage;
+        if(Math.random()<0.02) spawnEnemy();
+        // mermi ve düşman çarpışması
+        for(let i=0;i<projectiles.length;i++) {
+            let p=projectiles[i];
+            p.x+=p.dx; p.y+=p.dy;
+            if(p.x<-50||p.x>canvas.width+50||p.y<-50||p.y>canvas.height+50) { projectiles.splice(i,1); i--; continue; }
+            for(let j=0;j<enemies.length;j++) {
+                let e=enemies[j];
+                if(Math.hypot(p.x-e.x, p.y-e.y)<p.radius+e.radius) {
+                    e.health-=p.damage;
                     projectiles.splice(i,1);
-                    if (e.health <= 0) {
-                        player.gold += e.goldReward;
-                        gainXP(10);
+                    if(e.health<=0) {
+                        player.gold+=e.goldReward;
                         player.kills++;
                         player.cs++;
                         enemies.splice(j,1);
@@ -369,257 +465,106 @@
                 }
             }
         }
-        for (let i=0;i<enemies.length;i++) {
-            let e = enemies[i];
-            let angle = Math.atan2(player.y - e.y, player.x - e.x);
-            e.x += Math.cos(angle)*e.speed;
-            e.y += Math.sin(angle)*e.speed;
-            if (Math.hypot(player.x-e.x, player.y-e.y) < player.radius+e.radius) {
-                player.health -= e.damage;
+        // düşman oyuncuya doğru
+        for(let i=0;i<enemies.length;i++) {
+            let e=enemies[i];
+            let angle=Math.atan2(player.y-e.y, player.x-e.x);
+            e.x+=Math.cos(angle)*e.speed;
+            e.y+=Math.sin(angle)*e.speed;
+            if(Math.hypot(player.x-e.x, player.y-e.y)<player.radius+e.radius) {
+                player.health-=e.damage;
                 enemies.splice(i,1);
-                if (player.health <= 0) endGame();
+                if(player.health<=0) endGame();
                 updateUI();
                 i--;
             }
         }
-        if (cds.q>0) cds.q--;
-        if (cds.w>0) cds.w--;
-        if (cds.e>0) cds.e--;
-        if (cds.r>0) cds.r--;
-        if (weaponCooldown>0) weaponCooldown--;
+        if(cds.q>0) cds.q--;
+        if(cds.w>0) cds.w--;
+        if(cds.e>0) cds.e--;
+        if(cds.r>0) cds.r--;
+        if(weaponCooldown>0) weaponCooldown--;
+        if(player.mana<player.maxMana) player.mana=Math.min(player.maxMana, player.mana+0.3);
         updateUI();
-    }
-
-    function drawMap() {
-        let grad = ctx.createLinearGradient(0,0,0,canvas.height);
-        grad.addColorStop(0,'#1a3a2a');
-        grad.addColorStop(1,'#0a2a10');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        let mode = document.getElementById('graphicMode')?.value || 'Klasik';
-        if (mode === 'Canlı') ctx.filter = 'contrast(1.2) brightness(1.1)';
-        else if (mode === 'Soluk') ctx.filter = 'grayscale(0.5)';
-        else if (mode === 'Performans') ctx.filter = 'blur(1px)';
-        else ctx.filter = 'none';
-        if (document.getElementById('antialias')?.value === 'Açık') ctx.imageSmoothingEnabled = true;
-        else ctx.imageSmoothingEnabled = false;
     }
 
     function draw() {
-        drawMap();
-        enemies.forEach(e => {
-            ctx.beginPath(); ctx.arc(e.x, e.y, e.radius, 0, Math.PI*2);
-            ctx.fillStyle = '#ff7777'; ctx.fill();
-            ctx.fillStyle = 'white'; ctx.fillText(`${Math.floor(e.health)}`, e.x-10, e.y-8);
-        });
-        projectiles.forEach(p => {
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.radius-2, 0, Math.PI*2);
-            ctx.fillStyle = p.color; ctx.fill();
-        });
-        ctx.save();
-        ctx.shadowBlur = 6; ctx.fillStyle = '#6ee7b7';
-        ctx.fillRect(player.x-12, player.y-14, 24, 28);
-        ctx.beginPath(); ctx.arc(player.x, player.y-18, 10, 0, Math.PI*2);
-        ctx.fillStyle = '#0ac8ec'; ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(player.x-4, player.y-20, 2, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(player.x+4, player.y-20, 2, 0, Math.PI*2); ctx.fill();
-        ctx.restore();
-        ctx.fillStyle = '#ffd966'; ctx.font = 'bold 12px monospace';
-        ctx.fillText(`Q:${cds.q>0?cds.q:0}`, player.x-25, player.y-25);
-        ctx.fillText(`W:${cds.w>0?cds.w:0}`, player.x-5, player.y-25);
-        ctx.fillText(`E:${cds.e>0?cds.e:0}`, player.x+15, player.y-25);
-        ctx.fillText(`R:${cds.r>0?cds.r:0}`, player.x+35, player.y-25);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle='#1a3a2a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        enemies.forEach(e=>{ ctx.beginPath(); ctx.arc(e.x,e.y,e.radius,0,Math.PI*2); ctx.fillStyle='#ff7777'; ctx.fill(); ctx.fillStyle='white'; ctx.fillText(e.health,e.x-8,e.y-8); });
+        projectiles.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.radius-2,0,Math.PI*2); ctx.fillStyle='#0ac8ec'; ctx.fill(); });
+        // oyuncu
+        ctx.fillStyle='#6ee7b7'; ctx.fillRect(player.x-12,player.y-14,24,28);
+        ctx.beginPath(); ctx.arc(player.x,player.y-18,10,0,Math.PI*2); ctx.fillStyle='#0ac8ec'; ctx.fill();
+        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(player.x-4,player.y-20,2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(player.x+4,player.y-20,2,0,Math.PI*2); ctx.fill();
     }
 
-    function gameLoop(now) {
-        if (!gameRunning) return;
-        requestAnimationFrame(gameLoop);
-        updateGame();
-        draw();
-    }
+    function gameLoop() { if(!gameRunning) return; updateGame(); draw(); requestAnimationFrame(gameLoop); }
+    function startGameEngine() { resizeCanvas(); player={ x:canvas.width/2, y:canvas.height/2, radius:18, health:100, maxHealth:100, mana:100, maxMana:100, ad:12, level:1, gold:500, kills:0, cs:0, speed:4.2, direction:1 }; enemies=[]; projectiles=[]; cds={q:0,w:0,e:0,r:0}; weaponCooldown=0; applyChampStats(); updateUI(); gameRunning=true; gameLoop(); }
+    function endGame() { gameRunning=false; document.getElementById('gameContainer').style.display='none'; document.getElementById('main-menu').style.display='flex'; alert('Oyun bitti!'); }
 
-    function startGameEngine() {
-        gameRunning = true;
-        player = {
-            x: canvas.width/2, y: canvas.height/2, radius: 18,
-            health: 100, maxHealth: 100,
-            mana: 100, maxMana: 100,
-            ad: 12, level: 1, xp: 0, xpNeeded: 60,
-            gold: 500, kills: 0, deaths: 0, assists: 0, cs: 0,
-            speed: 4.2, direction: 1
-        };
-        applyChampStats();
-        enemies = [];
-        projectiles = [];
-        waveTimer = 0;
-        weaponCooldown = 0;
-        cds = { q:0, w:0, e:0, r:0 };
-        updateUI();
-        if (animationId) cancelAnimationFrame(animationId);
-        animationId = requestAnimationFrame(gameLoop);
-    }
-
-    function endGame() {
-        gameRunning = false;
-        if (animationId) cancelAnimationFrame(animationId);
-        document.getElementById('main-menu').style.display = 'flex';
-        document.getElementById('gameContainer').style.display = 'none';
-        alert(`Oyun bitti! Skor: ${player.kills*100 + player.cs*10}`);
-    }
-
-    // ---------- MENÜ FONKSİYONLARI ----------
+    // MENÜ FONKSİYONLARI
     window.switchTab = function(id) {
         document.querySelectorAll('.menu-panel').forEach(p=>p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
         event.target.classList.add('active');
     };
-    window.selectChamp = function(champ) {
-        selectedChamp = champ;
-        applyChampStats();
-        alert(`${champ} seçildi. Oyun başlatıldığında aktif olacak.`);
-    };
-    window.buyChamp = function(champ,cost) {
-        if (player.gold >= cost) {
-            player.gold -= cost;
-            updateUI();
-            alert(`${champ} satın alındı! Şimdi seçebilirsin.`);
-            selectChamp(champ);
-        } else alert("Altın yetersiz");
-    };
-    window.randomSkinPreview = function() {
-        let skins = ['Mafya Yasuo', 'KDA Ahri', 'Ejderha Avcısı Darius', 'Pijama Partisi Thresh'];
-        let r = skins[Math.floor(Math.random()*skins.length)];
-        alert(`🎭 Rastgele kostüm: ${r}`);
-    };
-    window.clearCache = function() {
-        localStorage.clear(); sessionStorage.clear();
-        alert("Önbellek temizlendi (localStorage/sessionStorage)");
-    };
-    window.changeName = function() {
-        let newName = document.getElementById('newNameInput').value;
-        if (newName) document.getElementById('displayName').innerText = newName;
-    };
-    window.changeTitle = function() {
-        let newTitle = document.getElementById('newTitleInput').value;
-        if (newTitle) document.getElementById('displayTitle').innerText = newTitle;
-    };
-    window.setCardColor = function() {
-        let color = document.getElementById('cardColor').value;
-        document.getElementById('profileCard').style.backgroundColor = color;
-    };
-    window.showLeaderboard = function() {
-        let div = document.getElementById('leaderboardDiv');
-        div.style.display = div.style.display === 'none' ? 'block' : 'none';
-    };
-    window.showFriendScores = function() {
-        document.getElementById('friendScoresDiv').innerHTML = "Arkadaşlar: KralMelo 2100, ElitCoder 1850";
-        document.getElementById('friendScoresSocial').innerHTML = "Arkadaşlar: KralMelo 2100, ElitCoder 1850";
-    };
-    window.sendGuildInvite = function() {
-        document.getElementById('guildResult').innerHTML = "📢 Lonca daveti gönderildi! 'Karanlık Lordlar' loncasına katıl (simülasyon)";
-    };
-    window.applySettings = function() {
-        let fps = parseInt(document.getElementById('fpsLimit').value);
-        requestedFPS = fps;
-        alert(`Ayarlar uygulandı. Hedef FPS: ${fps}`);
-    };
-    window.testVibration = function() {
-        if (document.getElementById('vibrate').value === 'Açık') navigator.vibrate?.(200);
-        else alert("Titreşim kapalı");
-    };
-    window.playBeep = function() {
-        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let oscillator = audioCtx.createOscillator();
-        let gain = audioCtx.createGain();
-        oscillator.connect(gain);
-        gain.connect(audioCtx.destination);
-        oscillator.frequency.value = 800;
-        gain.gain.value = 0.1;
-        oscillator.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-    };
-    window.sendChatMsg = function() {
-        let input = document.getElementById('chatInput');
-        let msg = input.value.trim();
-        if (!msg) return;
-        let bad = ['küfür','salak','aptal','gerizekalı'];
-        bad.forEach(w => { msg = msg.replace(new RegExp(w,'gi'), '***'); });
-        let chatDiv = document.getElementById('chatMessages');
-        chatDiv.innerHTML += `<div><b>İbo94:</b> ${msg}</div>`;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-        input.value = '';
-        if (document.getElementById('vibrate').value === 'Açık') navigator.vibrate?.(50);
-    };
-    window.startGame = function() {
-        document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('gameContainer').style.display = 'inline-block';
-        startGameEngine();
-        // Canvas boyut ve filtre ayarlarını güncelle
-        let res = document.getElementById('resolution').value;
-        if (res === 'Düşük (640x360)') { canvas.width=640; canvas.height=360; }
-        else if (res === 'Yüksek (1280x720)') { canvas.width=1280; canvas.height=720; }
-        else { canvas.width=900; canvas.height=550; }
-        player.x = canvas.width/2; player.y = canvas.height/2;
-        // Olay dinleyicileri
-        canvas.addEventListener('mousemove', (e) => {
-            let rect = canvas.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
-        });
-        canvas.addEventListener('click', () => shoot());
-    };
+    window.selectChamp = function(champ) { selectedChamp=champ; applyChampStats(); alert(`${champ} seçildi`); };
+    window.buyChamp = function(champ,cost) { if(player.gold>=cost) { player.gold-=cost; updateUI(); alert(`${champ} satın alındı!`); selectChamp(champ); } else alert('Altın yetersiz'); };
+    window.randomSkinPreview = function() { alert('🎭 Rastgele kostüm: Mafya Yasuo'); };
+    window.clearCache = function() { localStorage.clear(); alert('Önbellek temizlendi'); };
+    window.changeName = function() { let n=document.getElementById('newNameInput').value; if(n) document.getElementById('displayName').innerText=n; };
+    window.changeTitle = function() { let t=document.getElementById('newTitleInput').value; if(t) document.getElementById('displayTitle').innerText=t; };
+    window.showLeaderboard = function() { let d=document.getElementById('leaderboardDiv'); d.style.display=d.style.display==='none'?'block':'none'; };
+    window.showFriendScores = function() { document.getElementById('friendScoresDiv').innerHTML='Arkadaşlar: KralMelo 2100'; };
+    window.applySettings = function() { alert('Ayarlar uygulandı'); };
+    window.testVibration = function() { if(document.getElementById('vibrate').value==='Açık') navigator.vibrate?.(200); else alert('Titreşim kapalı'); };
+    window.playBeep = function() { let ctx=new (window.AudioContext||webkitAudioContext)(); let o=ctx.createOscillator(); o.connect(ctx.destination); o.frequency.value=800; o.start(); o.stop(ctx.currentTime+0.2); };
+    window.sendChatMsg = function() { let inp=document.getElementById('chatInput'); let msg=inp.value.trim(); if(!msg) return; let bad=['küfür','salak']; bad.forEach(w=>msg=msg.replace(new RegExp(w,'gi'),'***')); let div=document.getElementById('chatMessages'); div.innerHTML+=`<div><b>İbo94:</b> ${msg}</div>`; div.scrollTop=div.scrollHeight; inp.value=''; if(document.getElementById('vibrate').value==='Açık') navigator.vibrate?.(50); };
+    window.startGame = function() { document.getElementById('main-menu').style.display='none'; document.getElementById('gameContainer').style.display='flex'; startGameEngine(); };
     window.openMenu = function() { endGame(); };
 
-    // Klavye
-    window.addEventListener('keydown', (e) => {
-        let key = e.key.toLowerCase();
-        keys[key] = true;
-        if (key === 'q') castQ();
-        if (key === 'w') castW();
-        if (key === 'e') castE();
-        if (key === 'r') castR();
-        if (key === 'f') castFlash();
-    });
-    window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
-    document.getElementById('btnQ').onclick = castQ;
-    document.getElementById('btnW').onclick = castW;
-    document.getElementById('btnE').onclick = castE;
-    document.getElementById('btnR').onclick = castR;
-    document.getElementById('btnF').onclick = castFlash;
-
-    // Silah butonları oyun içinde (shop)
-    function addShopButtons() {
-        let shopDiv = document.querySelector('.shop-panel');
-        if (!shopDiv) return;
-        shopDiv.innerHTML = `
-            <button class="shop-btn" data-weapon="pistol">🔫 Tabanca (150)</button>
-            <button class="shop-btn" data-weapon="rifle">🔫 Tüfek (300)</button>
-            <button class="shop-btn" data-weapon="shotgun">💥 Pompalı (400)</button>
-            <button class="shop-btn" data-item="health">❤️ Can+50 (200)</button>
-            <button class="shop-btn" onclick="openMenu()">🚪 Menü</button>
-        `;
-        document.querySelectorAll('[data-weapon]').forEach(btn => {
-            btn.onclick = () => {
-                let cost = {'pistol':150,'rifle':300,'shotgun':400}[btn.dataset.weapon];
-                if (player.gold >= cost) {
-                    player.gold -= cost;
-                    currentWeapon = btn.dataset.weapon;
-                    updateUI();
-                } else alert("Yetersiz altın");
-            };
+    // Dokunmatik kontroller
+    let moveDir = { x:0, y:0 };
+    document.querySelectorAll('.joypad-btn').forEach(btn => {
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            let dir = btn.dataset.dir;
+            if(dir==='up') moveDir={x:0,y:-1};
+            if(dir==='down') moveDir={x:0,y:1};
+            if(dir==='left') moveDir={x:-1,y:0};
+            if(dir==='right') moveDir={x:1,y:0};
+            let interval = setInterval(() => {
+                if(gameRunning) {
+                    player.x += moveDir.x * player.speed;
+                    player.y += moveDir.y * player.speed;
+                    player.x = Math.min(canvas.width-25,Math.max(25,player.x));
+                    player.y = Math.min(canvas.height-25,Math.max(25,player.y));
+                }
+            }, 16);
+            btn.dataset.interval = interval;
         });
-        document.querySelector('[data-item="health"]').onclick = () => {
-            if (player.gold >=200) {
-                player.gold -= 200;
-                player.maxHealth += 50;
-                player.health += 50;
-                updateUI();
-            } else alert("Yetersiz altın");
-        };
-    }
-    setTimeout(addShopButtons, 100);
+        btn.addEventListener('touchend', (e) => {
+            clearInterval(btn.dataset.interval);
+            moveDir={x:0,y:0};
+        });
+    });
+    document.getElementById('shootBtn').addEventListener('touchstart', (e) => { e.preventDefault(); shoot(); });
+    document.getElementById('menuBtn').addEventListener('touchstart', () => openMenu());
+    document.getElementById('btnQ').addEventListener('click', castQ);
+    document.getElementById('btnW').addEventListener('click', castW);
+    document.getElementById('btnE').addEventListener('click', castE);
+    document.getElementById('btnR').addEventListener('click', castR);
+    document.getElementById('btnF').addEventListener('click', castFlash);
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); let rect=canvas.getBoundingClientRect(); let touch=e.touches[0]; mouseX = (touch.clientX - rect.left) * (canvas.width/rect.width); mouseY = (touch.clientY - rect.top) * (canvas.height/rect.height); });
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); shoot(); });
+    canvas.addEventListener('mousemove', (e) => { let rect=canvas.getBoundingClientRect(); mouseX = (e.clientX - rect.left) * (canvas.width/rect.width); mouseY = (e.clientY - rect.top) * (canvas.height/rect.height); });
+    document.getElementById('chatToggle').addEventListener('click', () => { let p=document.getElementById('chatPanel'); p.style.display = p.style.display==='flex'?'none':'flex'; });
+
+    window.addEventListener('keydown', (e)=>{ keys[e.key]=true; if(e.key==='q') castQ(); if(e.key==='w') castW(); if(e.key==='e') castE(); if(e.key==='r') castR(); if(e.key==='f') castFlash(); });
+    window.addEventListener('keyup', (e)=>{ keys[e.key]=false; });
+    resizeCanvas();
 </script>
 </body>
 </html>
