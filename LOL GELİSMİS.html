@@ -3,285 +3,535 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>LoL Arena - Gelişmiş Silah & Karakter Sistemi</title>
+    <title>LoL Ultimate - Karakter & Silah & Harita Seçimi</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-        body { background-color: #010a13; color: #f0f6fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 10px; }
-        .container { position: relative; text-align: center; }
-        h1 { color: #c89b3c; font-size: 1.4rem; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .subtitle { color: #a0a6b4; font-size: 0.7rem; margin-bottom: 8px; }
-        #gameCanvas { background: radial-gradient(circle at center, #0b151f 0%, #03080e 100%); border: 2px solid #c89b3c; border-radius: 12px; box-shadow: 0 0 20px rgba(197, 155, 60, 0.25); cursor: crosshair; display: block; margin: 0 auto; }
-        .ui-panel { margin-top: 8px; display: flex; justify-content: space-between; width: 600px; gap: 6px; flex-wrap: wrap; }
-        .ui-panel span { background: rgba(10, 20, 30, 0.85); padding: 5px 12px; border: 1px solid rgba(197, 155, 60, 0.5); border-radius: 6px; font-size: 0.8rem; }
-        .shop-panel { margin-top: 8px; background: rgba(3, 13, 21, 0.95); padding: 8px; border: 1px solid #0ac8ec; border-radius: 8px; width: 600px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .shop-btn { background: #035a74; color: #fff; border: 1px solid #0ac8ec; padding: 6px 12px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-        .shop-btn:hover { background: #0ac8ec; color: #010a13; }
-        .char-select { margin-top: 8px; display: flex; gap: 10px; justify-content: center; }
-        .char-btn { background: #0c212b; border: 1px solid #c89b3c; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
-        .char-btn.selected { background: #c89b3c; color: #010a13; box-shadow: 0 0 10px #c89b3c; }
-        #menu { position: absolute; top: 2px; left: 2px; width: calc(100% - 4px); height: calc(100% - 4px); background: rgba(1, 10, 19, 0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px; backdrop-filter: blur(5px); z-index: 10; padding: 20px; }
-        #menu h2 { color: #c89b3c; font-size: 1.8rem; margin-bottom: 12px; }
-        #menu p { font-size: 0.85rem; color: #d1d5db; margin-bottom: 15px; max-width: 350px; }
-        .btn { background: linear-gradient(135deg, #0c212b, #035a74); color: #f0f6fa; border: 1px solid #c89b3c; padding: 10px 28px; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; margin-top: 10px; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 0 10px #c89b3c; }
+        * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
+        body { background: #0a0f1e; font-family: 'Segoe UI', system-ui; display: flex; flex-direction: column; align-items: center; padding: 10px; color: #f0f0f0; }
+        .game-container { position: relative; display: inline-block; }
+        canvas { border: 3px solid #c89b3c; border-radius: 16px; box-shadow: 0 0 20px rgba(200,155,60,0.5); cursor: crosshair; }
+        .ui-panel { margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; background: #1a1f2ecc; backdrop-filter: blur(8px); padding: 8px 20px; border-radius: 40px; font-size: 0.8rem; font-weight: bold; }
+        .ui-panel span { background: #0f1422; padding: 4px 12px; border-radius: 20px; border-left: 3px solid #c89b3c; }
+        .action-bar { margin-top: 8px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .btn { background: #2a3a4a; border: 1px solid #c89b3c; border-radius: 30px; padding: 6px 14px; font-weight: bold; cursor: pointer; transition: 0.1s; color: #ffd966; }
+        .btn:active { transform: scale(0.96); background: #c89b3c; color: black; }
+        .shop-panel { margin-top: 8px; background: #0f1422dd; padding: 6px 12px; border-radius: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; }
+        .shop-btn { background: #035a74; border: none; padding: 4px 12px; border-radius: 20px; color: white; cursor: pointer; font-size: 0.7rem; }
+        .shop-btn:hover { background: #0ac8ec; color: black; }
+        #menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; z-index: 20; gap: 20px; }
+        .char-select, .map-select { display: flex; gap: 12px; margin: 8px; flex-wrap: wrap; justify-content: center; }
+        .char-card, .map-card { background: #1e2a3a; padding: 8px 16px; border-radius: 40px; cursor: pointer; border: 1px solid #c89b3c; transition: 0.1s; }
+        .char-card.selected, .map-card.selected { background: #c89b3c; color: black; box-shadow: 0 0 12px gold; }
+        .start-btn { background: #c89b3c; color: black; padding: 12px 32px; border-radius: 40px; font-size: 1.2rem; font-weight: bold; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>⚔️ LoL ARENA - GELİŞMİŞ ⚔️</h1>
-    <div class="subtitle">WASD ile hareket | Fare ile nişan al + tıkla ateş et</div>
-    <div style="position: relative; width: 600px; height: 440px;">
-        <canvas id="gameCanvas" width="600" height="440"></canvas>
-        <div id="menu">
-            <h2>ARENA'YA HAZIRLAN</h2>
-            <p>Karakter seç, dalgaları temizle, altın topla ve güçlen! Her 10 dalgada bir BOSS gelir.</p>
+<div class="game-container">
+    <canvas id="gameCanvas" width="900" height="550"></canvas>
+    <div id="menu">
+        <h2 style="color:#c89b3c">⚔️ LOL ULTIMATE SAVAŞI ⚔️</h2>
+        <div>
+            <div style="color:white; margin-bottom: 5px;">Karakter Seç:</div>
             <div class="char-select">
-                <div class="char-btn" data-char="ahri">🦊 Ahri (Dengeli)</div>
-                <div class="char-btn" data-char="yasuo">🌪️ Yasuo (Kritik Şansı)</div>
-                <div class="char-btn" data-char="darius">🪓 Darius (Yüksek Can)</div>
+                <div class="char-card" data-char="ahri">🦊 Ahri (Büyücü)</div>
+                <div class="char-card" data-char="yasuo">🌪️ Yasuo (Suikastçı)</div>
+                <div class="char-card" data-char="darius">🪓 Darius (Savaşçı)</div>
+                <div class="char-card" data-char="jinx">💥 Jinx (Nişancı)</div>
+                <div class="char-card" data-char="thresh">🔗 Thresh (Destek)</div>
             </div>
-            <button class="btn" id="startGameBtn">SAVAŞI BAŞLAT</button>
         </div>
-    </div>
-    <div class="ui-panel">
-        <span>❤️ Can: <span id="health">100</span></span>
-        <span>💰 Altın: <span id="gold">0</span></span>
-        <span>📊 Skor: <span id="score">0</span></span>
-        <span>🔥 Dalga: <span id="wave">0</span></span>
-        <span>🔫 Silah: <span id="weaponName">Tabanca</span></span>
-    </div>
-    <div class="shop-panel">
-        <span>🛒 MAĞAZA (Altın harca)</span>
-        <button class="shop-btn" id="buyWeaponBtn">🔫 Silah Yükselt (200 Altın)</button>
-        <button class="shop-btn" id="buyHealthBtn">💊 Can Paketi (100 Altın)</button>
-        <button class="shop-btn" id="buyCritBtn">⚡ Kritik Şans (+%10) (150 Altın)</button>
+        <div>
+            <div style="color:white; margin-bottom: 5px;">Harita Seç:</div>
+            <div class="map-select">
+                <div class="map-card" data-map="0">🌲 Orman Haritası</div>
+                <div class="map-card" data-map="1">🏜️ Çöl Haritası</div>
+                <div class="map-card" data-map="2">🌙 Gece Haritası</div>
+            </div>
+        </div>
+        <button class="start-btn" id="startGameBtn">SAVAŞA BAŞLA</button>
     </div>
 </div>
+<div class="ui-panel">
+    <span>❤️ Can: <span id="health">100</span></span>
+    <span>💙 Mana: <span id="mana">100</span></span>
+    <span>💰 Altın: <span id="gold">500</span></span>
+    <span>🏆 Skor: <span id="score">0</span></span>
+    <span>⚔️ K/D/A: <span id="kda">0/0/0</span></span>
+    <span>🔫 Silah: <span id="weaponName">Tabanca</span></span>
+    <span>🗺️ Harita: <span id="mapName">Orman</span></span>
+</div>
+<div class="action-bar">
+    <div class="btn" id="qBtn">Q - Yıldırım (20 mana)</div>
+    <div class="btn" id="wBtn">W - Kalkan (30 mana)</div>
+    <div class="btn" id="eBtn">E - Hücum (25 mana)</div>
+    <div class="btn" id="rBtn">R - Ulti (60 mana)</div>
+</div>
+<div class="shop-panel" id="shopPanel">
+    <span>🛒 MAĞAZA (Silahlar & Eşya)</span>
+    <button class="shop-btn" data-weapon="pistol">🔫 Tabanca (150)</button>
+    <button class="shop-btn" data-weapon="rifle">🔫 Tüfek (300)</button>
+    <button class="shop-btn" data-weapon="shotgun">💥 Pompalı (400)</button>
+    <button class="shop-btn" data-weapon="sniper">🎯 Keskin Nişancı (500)</button>
+    <button class="shop-btn" data-weapon="magic">🔮 Büyü Asası (600)</button>
+    <button class="shop-btn" data-item="health">❤️ Can +50 (200)</button>
+    <button class="shop-btn" data-item="mana">💙 Mana +50 (150)</button>
+    <button class="shop-btn" id="changeMapBtn">🗺️ Harita Değiştir</button>
+</div>
+
 <script>
-(function(){
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const healthEl = document.getElementById('health');
-    const goldEl = document.getElementById('gold');
-    const scoreEl = document.getElementById('score');
-    const waveEl = document.getElementById('wave');
-    const weaponNameEl = document.getElementById('weaponName');
-    const menuEl = document.getElementById('menu');
-    
-    let selectedChar = 'ahri';
-    const characters = {
-        ahri: { baseHealth: 100, baseDamage: 12, critChance: 0.05 },
-        yasuo: { baseHealth: 85, baseDamage: 10, critChance: 0.20 },
-        darius: { baseHealth: 130, baseDamage: 14, critChance: 0.05 }
-    };
-    
-    let player = { x: 300, y: 220, radius: 18, health: 100, maxHealth: 100, damage: 12, critChance: 0.05, direction: 1, speed: 4.2 };
-    let bullets = [], enemies = [], healthPacks = [];
-    let score = 0, gold = 0, wave = 0, enemiesKilledThisWave = 0, enemiesPerWave = 5;
-    let gameRunning = false, waveInProgress = false;
-    let animationId = null, lastSpawnTime = 0;
-    let keys = {};
-    let weaponLevel = 1, weaponUpgradeCost = 200, critUpgradeCount = 0;
-    
-    document.querySelectorAll('.char-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedChar = btn.dataset.char;
-        });
-        if(btn.dataset.char === 'ahri') btn.classList.add('selected');
-    });
-    
-    function buyWeaponUpgrade() {
-        if (weaponLevel < 4 && gold >= weaponUpgradeCost) {
-            gold -= weaponUpgradeCost; weaponLevel++;
-            updateGoldUI();
-            const names = ['Tabanca', 'Çift Atış', 'Hızlı Atış', 'Güçlü Vuruş'];
-            weaponNameEl.innerText = names[weaponLevel-1];
-        } else if (weaponLevel >= 4) alert("Maksimum silah seviyesine ulaştın!");
-        else alert("Yeterli altın yok! (200 Altın gerekli)");
-    }
-    function buyHealthPack() {
-        if (gold >= 100 && player.health < player.maxHealth) {
-            gold -= 100;
-            player.health = Math.min(player.maxHealth, player.health + 30);
-            healthEl.innerText = player.health;
-            updateGoldUI();
-        } else alert("Yeterli altın yok veya canın dolu!");
-    }
-    function buyCritUpgrade() {
-        if (critUpgradeCount < 5 && gold >= 150) {
-            gold -= 150; critUpgradeCount++;
-            player.critChance = Math.min(0.6, player.critChance + 0.1);
-            updateGoldUI();
-        } else if (critUpgradeCount >= 5) alert("Maksimum kritik şansına ulaştın!");
-        else alert("Yeterli altın yok! (150 Altın gerekli)");
-    }
-    function updateGoldUI() { goldEl.innerText = Math.floor(gold); }
-    
-    function spawnEnemy() {
-        const side = Math.floor(Math.random() * 4);
-        let x, y;
-        const radius = 14;
-        if (side === 0) { x = Math.random() * canvas.width; y = -radius; }
-        else if (side === 1) { x = canvas.width + radius; y = Math.random() * canvas.height; }
-        else if (side === 2) { x = Math.random() * canvas.width; y = canvas.height + radius; }
-        else { x = -radius; y = Math.random() * canvas.height; }
-        const isBoss = (wave > 0 && wave % 10 === 0 && enemiesKilledThisWave === 0);
-        const health = isBoss ? 12 : 3 + Math.floor(wave / 8);
-        const reward = isBoss ? 100 : 15;
-        const speed = isBoss ? 1.3 : 1.7 + (wave * 0.03);
-        enemies.push({ x, y, radius: isBoss ? 24 : 14, speed: Math.min(3.5, speed), health, maxHealth: health, isBoss, reward, color: isBoss ? '#ff8c00' : '#ff4757' });
-    }
-    function spawnHealthPack(x, y) { if (Math.random() < 0.12) healthPacks.push({ x, y, radius: 8, heal: 20 }); }
-    
-    function update() {
-        if (!gameRunning) return;
-        if (keys['w'] || keys['arrowup']) player.y = Math.max(25, player.y - player.speed);
-        if (keys['s'] || keys['arrowdown']) player.y = Math.min(canvas.height - 25, player.y + player.speed);
-        if (keys['a'] || keys['arrowleft']) { player.x = Math.max(25, player.x - player.speed); player.direction = -1; }
-        if (keys['d'] || keys['arrowright']) { player.x = Math.min(canvas.width - 25, player.x + player.speed); player.direction = 1; }
+    (function(){
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let gameRunning = false;
+        let animFrame;
+        let keys = {};
+        let mouseX = 400, mouseY = 300;
         
-        if (!waveInProgress && gameRunning) {
-            wave++; waveEl.innerText = wave;
-            enemiesKilledThisWave = 0;
-            enemiesPerWave = 5 + Math.floor(wave / 5);
-            waveInProgress = true;
-            lastSpawnTime = Date.now() - 500;
+        // Karakterler
+        const characters = {
+            ahri: { name:'Ahri', maxHealth:100, maxMana:120, ad:12, crit:0.05 },
+            yasuo: { name:'Yasuo', maxHealth:90, maxMana:100, ad:15, crit:0.20 },
+            darius: { name:'Darius', maxHealth:130, maxMana:90, ad:14, crit:0.05 },
+            jinx: { name:'Jinx', maxHealth:95, maxMana:110, ad:16, crit:0.10 },
+            thresh: { name:'Thresh', maxHealth:110, maxMana:130, ad:10, crit:0.05 }
+        };
+        let selectedChar = 'ahri';
+        let currentMap = 0;
+        const mapNames = ['Orman Haritası','Çöl Haritası','Gece Haritası'];
+        
+        let player = {
+            x: canvas.width/2, y: canvas.height/2, radius: 18,
+            health: 100, maxHealth: 100,
+            mana: 100, maxMana: 100,
+            ad: 12,
+            kills:0, deaths:0, assists:0, cs:0,
+            gold: 500,
+            speed: 4.5,
+            direction: 1
+        };
+        
+        // Silahlar
+        let currentWeapon = 'pistol';
+        let weaponCooldown = 0;
+        const weapons = {
+            pistol: { name:'Tabanca', damage:15, bulletSpeed:12, bulletRadius:5, cooldown:12, manaCost:5, bullets:1, spread:0 },
+            rifle: { name:'Tüfek', damage:25, bulletSpeed:14, bulletRadius:4, cooldown:8, manaCost:8, bullets:3, spread:0.12 },
+            shotgun: { name:'Pompalı', damage:30, bulletSpeed:10, bulletRadius:5, cooldown:20, manaCost:12, bullets:5, spread:0.2 },
+            sniper: { name:'Keskin Nişancı', damage:60, bulletSpeed:18, bulletRadius:6, cooldown:30, manaCost:15, bullets:1, spread:0 },
+            magic: { name:'Büyü Asası', damage:45, bulletSpeed:16, bulletRadius:8, cooldown:18, manaCost:20, bullets:1, spread:0 }
+        };
+        
+        let cds = { q:0, w:0, e:0, r:0 };
+        let projectiles = [];
+        let enemies = [];
+        let towers = [
+            { x: 80, y: 80, radius: 28, team:'enemy', health:400, maxHealth:400, damage:22, range:130 },
+            { x: canvas.width-80, y: canvas.height-80, radius:28, team:'enemy', health:400, maxHealth:400, damage:22, range:130 }
+        ];
+        let lastSpawn = 0;
+        const SPAWN_INTERVAL = 2200;
+        
+        // UI elementleri
+        const healthSpan = document.getElementById('health');
+        const manaLbl = document.getElementById('mana');
+        const goldSpan = document.getElementById('gold');
+        const scoreSpan = document.getElementById('score');
+        const kdaSpan = document.getElementById('kda');
+        const weaponNameSpan = document.getElementById('weaponName');
+        const mapNameSpan = document.getElementById('mapName');
+        
+        function updateUI(){
+            healthSpan.innerText = `${Math.floor(player.health)}/${player.maxHealth}`;
+            manaLbl.innerText = `${Math.floor(player.mana)}/${player.maxMana}`;
+            goldSpan.innerText = player.gold;
+            scoreSpan.innerText = player.kills*100 + player.cs*10;
+            kdaSpan.innerText = `${player.kills}/${player.deaths}/${player.assists}`;
+            weaponNameSpan.innerText = weapons[currentWeapon].name;
+            mapNameSpan.innerText = mapNames[currentMap];
         }
-        const now = Date.now();
-        if (waveInProgress && enemies.length < 12 && (now - lastSpawnTime) > (wave % 10 === 0 ? 1800 : 900)) {
-            spawnEnemy(); lastSpawnTime = now;
+        
+        function applyCharacter(){
+            const ch = characters[selectedChar];
+            player.maxHealth = ch.maxHealth;
+            player.health = ch.maxHealth;
+            player.maxMana = ch.maxMana;
+            player.mana = ch.maxMana;
+            player.ad = ch.ad;
+            updateUI();
         }
-        for (let i=bullets.length-1; i>=0; i--) {
-            bullets[i].x += bullets[i].dx; bullets[i].y += bullets[i].dy;
-            if (bullets[i].x < -30 || bullets[i].x > canvas.width+30 || bullets[i].y < -30 || bullets[i].y > canvas.height+30) bullets.splice(i,1);
-        }
-        for (let i=enemies.length-1; i>=0; i--) {
-            const e = enemies[i];
-            const angle = Math.atan2(player.y - e.y, player.x - e.x);
-            e.x += Math.cos(angle) * e.speed; e.y += Math.sin(angle) * e.speed;
-            const distToPlayer = Math.hypot(player.x - e.x, player.y - e.y);
-            if (distToPlayer - player.radius - e.radius < 0) {
-                player.health -= e.isBoss ? 25 : 12;
-                healthEl.innerText = Math.floor(player.health);
-                enemies.splice(i,1);
-                if (player.health <= 0) endGame();
-                continue;
+        
+        function buyWeapon(weaponId){
+            const cost = { pistol:150, rifle:300, shotgun:400, sniper:500, magic:600 }[weaponId];
+            if(player.gold >= cost){
+                player.gold -= cost;
+                currentWeapon = weaponId;
+                updateUI();
+                return true;
             }
-            for (let j=bullets.length-1; j>=0; j--) {
-                const b = bullets[j];
-                const dist = Math.hypot(e.x - b.x, e.y - b.y);
-                if (dist - e.radius - b.radius < 0) {
-                    let dmg = b.damage || player.damage;
-                    if (Math.random() < player.critChance) dmg *= 2;
-                    e.health -= dmg;
-                    bullets.splice(j,1);
-                    if (e.health <= 0) {
-                        gold += e.reward; score += e.reward;
-                        enemiesKilledThisWave++;
-                        updateGoldUI(); scoreEl.innerText = score;
-                        spawnHealthPack(e.x, e.y);
+            return false;
+        }
+        
+        function buyItem(item){
+            if(item === 'health' && player.gold >= 200){
+                player.gold -= 200;
+                player.maxHealth += 50;
+                player.health += 50;
+            } else if(item === 'mana' && player.gold >= 150){
+                player.gold -= 150;
+                player.maxMana += 50;
+                player.mana += 50;
+            } else return false;
+            updateUI();
+            return true;
+        }
+        
+        function shoot(){
+            if(weaponCooldown > 0) return false;
+            const w = weapons[currentWeapon];
+            if(player.mana < w.manaCost) return false;
+            player.mana -= w.manaCost;
+            weaponCooldown = w.cooldown;
+            const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+            if(w.bullets === 1){
+                projectiles.push({
+                    x: player.x, y: player.y,
+                    dx: Math.cos(angle)*w.bulletSpeed, dy: Math.sin(angle)*w.bulletSpeed,
+                    damage: w.damage + player.ad,
+                    radius: w.bulletRadius,
+                    life: 120
+                });
+            } else {
+                for(let i=0; i<w.bullets; i++){
+                    let spreadAngle = angle + ( (i - (w.bullets-1)/2) * w.spread );
+                    projectiles.push({
+                        x: player.x, y: player.y,
+                        dx: Math.cos(spreadAngle)*w.bulletSpeed, dy: Math.sin(spreadAngle)*w.bulletSpeed,
+                        damage: w.damage + player.ad,
+                        radius: w.bulletRadius-1,
+                        life: 120
+                    });
+                }
+            }
+            updateUI();
+            return true;
+        }
+        
+        function castQ(){
+            if(cds.q>0) return false;
+            if(player.mana<20) return false;
+            player.mana-=20;
+            cds.q = 30;
+            const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+            projectiles.push({
+                x: player.x, y: player.y,
+                dx: Math.cos(angle)*14, dy: Math.sin(angle)*14,
+                damage: player.ad + 35,
+                radius: 9,
+                life: 100
+            });
+            updateUI();
+            return true;
+        }
+        function castW(){
+            if(cds.w>0) return false;
+            if(player.mana<30) return false;
+            player.mana-=30;
+            cds.w = 40;
+            player.health = Math.min(player.maxHealth, player.health+40);
+            updateUI();
+            return true;
+        }
+        function castE(){
+            if(cds.e>0) return false;
+            if(player.mana<25) return false;
+            player.mana-=25;
+            cds.e = 25;
+            player.speed = 7;
+            setTimeout(()=>{ player.speed = 4.5; }, 800);
+            for(let i=0;i<enemies.length;i++){
+                if(Math.hypot(player.x-enemies[i].x, player.y-enemies[i].y) < 80){
+                    enemies[i].health -= player.ad+20;
+                    if(enemies[i].health<=0){
+                        player.gold += enemies[i].goldReward;
+                        player.kills++;
+                        player.cs++;
                         enemies.splice(i,1);
+                        i--;
+                        updateUI();
                     }
-                    break;
+                }
+            }
+            updateUI();
+            return true;
+        }
+        function castR(){
+            if(cds.r>0) return false;
+            if(player.mana<60) return false;
+            player.mana-=60;
+            cds.r = 120;
+            for(let i=0;i<enemies.length;i++){
+                if(Math.hypot(player.x-enemies[i].x, player.y-enemies[i].y) < 160){
+                    enemies[i].health -= player.ad*2 + 60;
+                    if(enemies[i].health<=0){
+                        player.gold += enemies[i].goldReward;
+                        player.kills++;
+                        player.cs++;
+                        enemies.splice(i,1);
+                        i--;
+                        updateUI();
+                    }
+                }
+            }
+            updateUI();
+            return true;
+        }
+        
+        function spawnMinion(){
+            let side = Math.random() < 0.5 ? 0 : 1;
+            let x = side===0 ? 20 : canvas.width-20;
+            let y = 50 + Math.random()*(canvas.height-100);
+            enemies.push({
+                x, y, radius: 12,
+                health: 45 + Math.floor(Math.random()*20),
+                maxHealth: 60,
+                speed: 1.5,
+                damage: 9,
+                goldReward: 25,
+                type: 'minion'
+            });
+        }
+        
+        function towerAttack(){
+            for(let t of towers){
+                if(t.team === 'enemy' && Math.hypot(player.x-t.x, player.y-t.y) < t.range){
+                    player.health -= t.damage/25;
+                    if(player.health <= 0) endGame();
+                    updateUI();
                 }
             }
         }
-        for (let i=0; i<healthPacks.length; i++) {
-            const hp = healthPacks[i];
-            const dist = Math.hypot(player.x - hp.x, player.y - hp.y);
-            if (dist - player.radius - hp.radius < 0) {
-                player.health = Math.min(player.maxHealth, player.health + hp.heal);
-                healthEl.innerText = Math.floor(player.health);
-                healthPacks.splice(i,1); i--;
-            }
-        }
-        if (waveInProgress && enemies.length === 0 && enemiesKilledThisWave >= enemiesPerWave) {
-            waveInProgress = false;
-            gold += 50 + wave * 5;
-            updateGoldUI();
-        }
-    }
-    
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'rgba(197,155,60,0.05)';
-        for (let i = 0; i < canvas.width; i += 40) {
-            ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke();
-        }
-        ctx.save();
-        ctx.fillStyle = '#6ee7b7';
-        ctx.shadowBlur = 8; ctx.shadowColor = '#0ac8ec';
-        ctx.fillRect(player.x-12, player.y-14, 24, 28);
-        ctx.beginPath(); ctx.arc(player.x, player.y-18, 10, 0, Math.PI*2);
-        ctx.fillStyle = '#f0f6fa'; ctx.fill();
-        ctx.fillStyle = '#1a2a3a';
-        ctx.beginPath(); ctx.arc(player.x-4, player.y-20, 2, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(player.x+4, player.y-20, 2, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#c89b3c';
-        if (player.direction === 1) ctx.fillRect(player.x+10, player.y-6, 14, 5);
-        else ctx.fillRect(player.x-24, player.y-6, 14, 5);
-        ctx.restore();
         
-        bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, b.radius-1, 0, Math.PI*2); ctx.fillStyle = '#0ac8ec'; ctx.shadowBlur = 5; ctx.fill(); });
-        enemies.forEach(e => { ctx.beginPath(); ctx.arc(e.x, e.y, e.radius-2, 0, Math.PI*2); ctx.fillStyle = e.color; ctx.shadowBlur = 6; ctx.fill(); ctx.fillStyle = 'white'; ctx.font = 'bold 12px monospace'; ctx.shadowBlur = 0; ctx.fillText(`${e.health}`, e.x-10, e.y-8); if(e.isBoss) { ctx.fillStyle = '#ffcc00'; ctx.font = 'bold 10px monospace'; ctx.fillText('BOSS', e.x-18, e.y-15); } });
-        healthPacks.forEach(h => { ctx.fillStyle = '#ff6b6b'; ctx.beginPath(); ctx.arc(h.x, h.y, h.radius-2, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = 'white'; ctx.fillText('+', h.x-3, h.y+4); });
-        ctx.shadowBlur = 0;
-    }
-    
-    function gameLoop() { update(); draw(); if (gameRunning) animationId = requestAnimationFrame(gameLoop); }
-    function startGame() {
-        if (animationId) cancelAnimationFrame(animationId);
-        const stats = characters[selectedChar];
-        player.health = stats.baseHealth; player.maxHealth = stats.baseHealth;
-        player.damage = stats.baseDamage; player.critChance = stats.critChance;
-        player.x = 300; player.y = 220;
-        healthEl.innerText = player.health;
-        score = 0; gold = 0; wave = 0; weaponLevel = 1; critUpgradeCount = 0;
-        enemies = []; bullets = []; healthPacks = [];
-        scoreEl.innerText = 0; goldEl.innerText = 0; waveEl.innerText = 0;
-        weaponNameEl.innerText = 'Tabanca';
-        waveInProgress = false; enemiesKilledThisWave = 0; enemiesPerWave = 5; lastSpawnTime = 0;
-        gameRunning = true;
-        menuEl.style.display = 'none';
-        gameLoop();
-    }
-    function endGame() {
-        gameRunning = false;
-        if (animationId) cancelAnimationFrame(animationId);
-        menuEl.style.display = 'flex';
-        const h2 = menuEl.querySelector('h2'); const p = menuEl.querySelector('p');
-        h2.innerHTML = "⚰️ ÖLDÜN! ⚰️";
-        p.innerHTML = `Dalga: ${wave} | Skor: ${score} | Altın: ${gold}<br>Yeniden başlamak için tekrar dene.`;
-    }
-    window.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; });
-    window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
-    canvas.addEventListener('click', (e) => {
-        if (!gameRunning) return;
-        const rect = canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
-        const angle = Math.atan2(my - player.y, mx - player.x);
-        const speed = 8;
-        if (weaponLevel === 1) {
-            bullets.push({ x: player.x, y: player.y, dx: Math.cos(angle)*speed, dy: Math.sin(angle)*speed, radius: 5, damage: player.damage });
-        } else if (weaponLevel === 2) {
-            bullets.push({ x: player.x-4, y: player.y-4, dx: Math.cos(angle)*speed, dy: Math.sin(angle)*speed, radius: 5, damage: player.damage });
-            bullets.push({ x: player.x+4, y: player.y+4, dx: Math.cos(angle)*speed, dy: Math.sin(angle)*speed, radius: 5, damage: player.damage });
-        } else if (weaponLevel === 3) {
-            for (let i = -1; i <= 1; i++) {
-                bullets.push({ x: player.x + i*5, y: player.y + i*3, dx: Math.cos(angle + i*0.1)*speed, dy: Math.sin(angle + i*0.1)*speed, radius: 4, damage: player.damage });
+        function updateEnemies(){
+            for(let i=0;i<enemies.length;i++){
+                let e = enemies[i];
+                let angle = Math.atan2(player.y - e.y, player.x - e.x);
+                e.x += Math.cos(angle)*e.speed;
+                e.y += Math.sin(angle)*e.speed;
+                if(Math.hypot(player.x-e.x, player.y-e.y) - player.radius - e.radius < 0){
+                    player.health -= e.damage;
+                    enemies.splice(i,1);
+                    if(player.health <= 0) endGame();
+                    updateUI();
+                    i--;
+                    continue;
+                }
+                for(let j=0;j<projectiles.length;j++){
+                    let p = projectiles[j];
+                    if(Math.hypot(e.x-p.x, e.y-p.y) - e.radius - p.radius < 0){
+                        e.health -= p.damage;
+                        projectiles.splice(j,1);
+                        if(e.health <= 0){
+                            player.gold += e.goldReward;
+                            player.kills++;
+                            player.cs++;
+                            enemies.splice(i,1);
+                            updateUI();
+                            i--;
+                        }
+                        break;
+                    }
+                }
             }
-        } else if (weaponLevel >= 4) {
-            bullets.push({ x: player.x, y: player.y, dx: Math.cos(angle)*speed, dy: Math.sin(angle)*speed, radius: 7, damage: player.damage * 1.5 });
         }
-    });
-    document.getElementById('buyWeaponBtn').onclick = buyWeaponUpgrade;
-    document.getElementById('buyHealthBtn').onclick = buyHealthPack;
-    document.getElementById('buyCritBtn').onclick = buyCritUpgrade;
-    document.getElementById('startGameBtn').onclick = startGame;
-})();
+        
+        function updateProjectiles(){
+            for(let i=0;i<projectiles.length;i++){
+                let p = projectiles[i];
+                p.x += p.dx;
+                p.y += p.dy;
+                p.life--;
+                if(p.x<-50||p.x>canvas.width+50||p.y<-50||p.y>canvas.height+50||p.life<=0){
+                    projectiles.splice(i,1);
+                    i--;
+                }
+            }
+        }
+        
+        function updateCooldowns(){
+            if(cds.q>0) cds.q--;
+            if(cds.w>0) cds.w--;
+            if(cds.e>0) cds.e--;
+            if(cds.r>0) cds.r--;
+            if(weaponCooldown>0) weaponCooldown--;
+        }
+        
+        function regenMana(){
+            if(player.mana < player.maxMana){
+                player.mana = Math.min(player.maxMana, player.mana + 0.4);
+                updateUI();
+            }
+        }
+        
+        function updateGame(){
+            if(!gameRunning) return;
+            if(keys['w']||keys['arrowup']) player.y = Math.max(25, player.y - player.speed);
+            if(keys['s']||keys['arrowdown']) player.y = Math.min(canvas.height-25, player.y + player.speed);
+            if(keys['a']||keys['arrowleft']){ player.x = Math.max(25, player.x - player.speed); player.direction = -1; }
+            if(keys['d']||keys['arrowright']){ player.x = Math.min(canvas.width-25, player.x + player.speed); player.direction = 1; }
+            
+            let now = Date.now();
+            if(now - lastSpawn > SPAWN_INTERVAL){
+                spawnMinion();
+                lastSpawn = now;
+            }
+            updateEnemies();
+            updateProjectiles();
+            towerAttack();
+            updateCooldowns();
+            regenMana();
+            player.health = Math.min(player.maxHealth, player.health);
+            player.mana = Math.min(player.maxMana, player.mana);
+        }
+        
+        function drawMap(){
+            let c1,c2,lineColor;
+            if(currentMap===0){ c1='#1a4a2a'; c2='#0a2a10'; lineColor='rgba(100,200,50,0.1)'; }
+            else if(currentMap===1){ c1='#c2a25a'; c2='#8a6a2a'; lineColor='rgba(200,150,50,0.15)'; }
+            else{ c1='#1e1e4a'; c2='#0a0a2a'; lineColor='rgba(100,100,200,0.1)'; }
+            let grad = ctx.createLinearGradient(0,0,0,canvas.height);
+            grad.addColorStop(0,c1);
+            grad.addColorStop(1,c2);
+            ctx.fillStyle=grad;
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.strokeStyle=lineColor;
+            for(let i=0;i<canvas.width;i+=50){
+                ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke();
+            }
+        }
+        
+        function draw(){
+            drawMap();
+            towers.forEach(t=>{
+                ctx.beginPath(); ctx.arc(t.x,t.y,t.radius,0,Math.PI*2);
+                ctx.fillStyle='#aa4444'; ctx.fill();
+                ctx.fillStyle='white'; ctx.fillText(`Kule ${Math.floor(t.health)}`, t.x-18,t.y-15);
+            });
+            enemies.forEach(e=>{
+                ctx.beginPath(); ctx.arc(e.x,e.y,e.radius,0,Math.PI*2);
+                ctx.fillStyle='#ff7777'; ctx.fill();
+                ctx.fillStyle='white'; ctx.fillText(`${Math.floor(e.health)}/${e.maxHealth}`, e.x-12,e.y-12);
+            });
+            projectiles.forEach(p=>{
+                ctx.beginPath(); ctx.arc(p.x,p.y,p.radius-1,0,Math.PI*2);
+                ctx.fillStyle='#0ac8ec'; ctx.fill();
+            });
+            ctx.save();
+            ctx.shadowBlur=8; ctx.fillStyle='#6ee7b7';
+            ctx.fillRect(player.x-12,player.y-14,24,28);
+            ctx.beginPath(); ctx.arc(player.x,player.y-18,10,0,Math.PI*2);
+            ctx.fillStyle='#f0f6fa'; ctx.fill();
+            ctx.fillStyle='#1a2a3a';
+            ctx.beginPath(); ctx.arc(player.x-4,player.y-20,2,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(player.x+4,player.y-20,2,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle='#c89b3c';
+            if(player.direction===1) ctx.fillRect(player.x+10,player.y-6,14,5);
+            else ctx.fillRect(player.x-24,player.y-6,14,5);
+            ctx.restore();
+            ctx.fillStyle='#ffd966'; ctx.font='bold 10px monospace';
+            ctx.fillText(`Q:${cds.q>0?cds.q:'0'}`, player.x-30,player.y-30);
+            ctx.fillText(`W:${cds.w>0?cds.w:'0'}`, player.x-10,player.y-30);
+            ctx.fillText(`E:${cds.e>0?cds.e:'0'}`, player.x+10,player.y-30);
+            ctx.fillText(`R:${cds.r>0?cds.r:'0'}`, player.x+30,player.y-30);
+        }
+        
+        function gameLoop(){
+            if(!gameRunning) return;
+            updateGame();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function endGame(){
+            gameRunning = false;
+            document.getElementById('menu').style.display = 'flex';
+        }
+        
+        function startGame(){
+            gameRunning = true;
+            document.getElementById('menu').style.display = 'none';
+            applyCharacter();
+            player.x = canvas.width/2;
+            player.y = canvas.height/2;
+            player.gold = 500;
+            player.kills=0; player.deaths=0; player.assists=0; player.cs=0;
+            player.health = player.maxHealth;
+            player.mana = player.maxMana;
+            enemies = [];
+            projectiles = [];
+            cds = {q:0,w:0,e:0,r:0};
+            weaponCooldown = 0;
+            currentWeapon = 'pistol';
+            lastSpawn = Date.now();
+            updateUI();
+            gameLoop();
+        }
+        
+        function changeMap(){
+            currentMap = (currentMap+1)%3;
+            updateUI();
+        }
+        
+        // Event Listeners
+        window.addEventListener('keydown', (e)=>{
+            let key = e.key.toLowerCase();
+            keys[key] = true;
+            if(key === 'q') castQ();
+            if(key === 'w') castW();
+            if(key === 'e') castE();
+            if(key === 'r') castR();
+        });
+        window.addEventListener('keyup', (e)=>{ keys[e.key.toLowerCase()] = false; });
+        canvas.addEventListener('mousemove', (e)=>{
+            let rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+        canvas.addEventListener('click', (e)=>{ shoot(); });
+        
+        document.getElementById('qBtn').onclick = castQ;
+        document.getElementById('wBtn').onclick = castW;
+        document.getElementById('eBtn').onclick = castE;
+        document.getElementById('rBtn').onclick = castR;
+        document.querySelectorAll('.shop-btn[data-weapon]').forEach(btn=>{
+            btn.onclick = ()=> buyWeapon(btn.dataset.weapon);
+        });
+        document.querySelectorAll('.shop-btn[data-item]').forEach(btn=>{
+            btn.onclick = ()=> buyItem(btn.dataset.item);
+        });
+        document.getElementById('changeMapBtn').onclick = changeMap;
+        document.getElementById('startGameBtn').onclick = startGame;
+        
+        document.querySelectorAll('.char-card').forEach(card=>{
+            card.onclick = ()=>{
+                document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedChar = card.dataset.char;
+            };
+            if(card.dataset.char === 'ahri') card.classList.add('selected');
+        });
+        document.querySelectorAll('.map-card').forEach(card=>{
+            card.onclick = ()=>{
+                document.querySelectorAll('.map-card').forEach(c=>c.classList.remove('selected'));
+                card.classList.add('selected');
+                currentMap = parseInt(card.dataset.map);
+                updateUI();
+            };
+            if(card.dataset.map == 0) card.classList.add('selected');
+        });
+        
+        gameRunning = false;
+        updateUI();
+    })();
 </script>
 </body>
 </html>
