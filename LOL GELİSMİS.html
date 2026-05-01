@@ -159,6 +159,10 @@
             color: #0a0f1e;
             box-shadow: 0 2px 8px black;
             touch-action: manipulation;
+            cursor: pointer;
+        }
+        .action-btn:active {
+            transform: scale(0.95);
         }
         .chat-toggle {
             position: fixed;
@@ -248,6 +252,7 @@
             font-weight: bold;
             font-size: 12px;
             text-align: center;
+            cursor: pointer;
         }
         @media (max-width: 600px) {
             .joypad-btn { width: 50px; height: 50px; font-size: 1.2rem; }
@@ -312,11 +317,11 @@
         <span>🏆 <span id="score">0</span></span>
     </div>
     <div class="skill-bar">
-        <div class="skill" id="btnQ">Q</div>
-        <div class="skill" id="btnW">W</div>
-        <div class="skill" id="btnE">E</div>
-        <div class="skill" id="btnR">R</div>
-        <div class="skill" id="btnF">F</div>
+        <div class="skill" id="btnQ" onclick="castQ()">Q</div>
+        <div class="skill" id="btnW" onclick="castW()">W</div>
+        <div class="skill" id="btnE" onclick="castE()">E</div>
+        <div class="skill" id="btnR" onclick="castR()">R</div>
+        <div class="skill" id="btnF" onclick="castFlash()">F</div>
     </div>
     <div class="mobile-controls">
         <div class="joypad" id="joypad">
@@ -428,7 +433,6 @@
 
     function updateGame() {
         if (!gameRunning) return;
-        // klavye hareket (opsiyonel)
         let moveX=0, moveY=0;
         if (keys['ArrowUp']||keys['w']) moveY=-1;
         if (keys['ArrowDown']||keys['s']) moveY=1;
@@ -525,7 +529,7 @@
     window.startGame = function() { document.getElementById('main-menu').style.display='none'; document.getElementById('gameContainer').style.display='flex'; startGameEngine(); };
     window.openMenu = function() { endGame(); };
 
-    // Dokunmatik kontroller
+    // Dokunmatik ve fare kontrolleri
     let moveDir = { x:0, y:0 };
     document.querySelectorAll('.joypad-btn').forEach(btn => {
         btn.addEventListener('touchstart', (e) => {
@@ -550,19 +554,60 @@
             moveDir={x:0,y:0};
         });
     });
-    document.getElementById('shootBtn').addEventListener('touchstart', (e) => { e.preventDefault(); shoot(); });
+
+    // Masaüstü ve mobil ateş etme olayları
+    let shootBtn = document.getElementById('shootBtn');
+    shootBtn.addEventListener('mousedown', (e) => { e.preventDefault(); shoot(); });
+    shootBtn.addEventListener('touchstart', (e) => { e.preventDefault(); shoot(); });
+
     document.getElementById('menuBtn').addEventListener('touchstart', () => openMenu());
-    document.getElementById('btnQ').addEventListener('click', castQ);
-    document.getElementById('btnW').addEventListener('click', castW);
-    document.getElementById('btnE').addEventListener('click', castE);
-    document.getElementById('btnR').addEventListener('click', castR);
-    document.getElementById('btnF').addEventListener('click', castFlash);
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); let rect=canvas.getBoundingClientRect(); let touch=e.touches[0]; mouseX = (touch.clientX - rect.left) * (canvas.width/rect.width); mouseY = (touch.clientY - rect.top) * (canvas.height/rect.height); });
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); shoot(); });
-    canvas.addEventListener('mousemove', (e) => { let rect=canvas.getBoundingClientRect(); mouseX = (e.clientX - rect.left) * (canvas.width/rect.width); mouseY = (e.clientY - rect.top) * (canvas.height/rect.height); });
+    document.getElementById('menuBtn').addEventListener('click', () => openMenu());
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        let rect=canvas.getBoundingClientRect();
+        let touch=e.touches[0];
+        mouseX = (touch.clientX - rect.left) * (canvas.width/rect.width);
+        mouseY = (touch.clientY - rect.top) * (canvas.height/rect.height);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        let rect=canvas.getBoundingClientRect();
+        mouseX = (e.clientX - rect.left) * (canvas.width/rect.width);
+        mouseY = (e.clientY - rect.top) * (canvas.height/rect.height);
+    });
+
+    // Fare tıklamasıyla ateş etme
+    canvas.addEventListener('mousedown', (e) => {
+        let rect=canvas.getBoundingClientRect();
+        mouseX = (e.clientX - rect.left) * (canvas.width/rect.width);
+        mouseY = (e.clientY - rect.top) * (canvas.height/rect.height);
+        shoot();
+    });
+
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        let rect=canvas.getBoundingClientRect();
+        let touch=e.touches[0];
+        mouseX = (touch.clientX - rect.left) * (canvas.width/rect.width);
+        mouseY = (touch.clientY - rect.top) * (canvas.height/rect.height);
+        shoot();
+    });
+
     document.getElementById('chatToggle').addEventListener('click', () => { let p=document.getElementById('chatPanel'); p.style.display = p.style.display==='flex'?'none':'flex'; });
 
-    window.addEventListener('keydown', (e)=>{ keys[e.key]=true; if(e.key==='q') castQ(); if(e.key==='w') castW(); if(e.key==='e') castE(); if(e.key==='r') castR(); if(e.key==='f') castFlash(); });
+    window.addEventListener('keydown', (e)=>{
+        keys[e.key]=true;
+        if(e.key==='q') castQ();
+        if(e.key==='w') castW();
+        if(e.key==='e') castE();
+        if(e.key==='r') castR();
+        if(e.key==='f') castFlash();
+        if(e.key===' ') {
+            e.preventDefault();
+            shoot();
+        }
+    });
     window.addEventListener('keyup', (e)=>{ keys[e.key]=false; });
     resizeCanvas();
 </script>
