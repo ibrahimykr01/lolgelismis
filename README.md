@@ -1,5 +1,3 @@
-README.md
-Aşağıda, geliştirdiğiniz MOBA prototipi için GitHub veya yerel proje dizininizde kullanabileceğiniz kapsamlı bir README.md dosyası bulunmaktadır. Bu dosyayı projenizin ana dizinine README.md adıyla kaydedebilirsiniz.
 
 MOBA Prototipi (HTML5 Canvas)
 Bu proje, tarayıcı tabanlı ve çok oyunculu bir MOBA (Çok Oyunculu Çevrimiçi Savaş Arenası) oyununun temel mekaniklerini test etmek amacıyla geliştirilmiş hafif bir prototiptir.
